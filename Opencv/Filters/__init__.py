@@ -1,0 +1,1 @@
+catlog = ['laplace_plg', 'canny']
