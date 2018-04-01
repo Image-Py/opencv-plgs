@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-import cv2, serial
+import cv2
 from imagepy.core.engine import Filter
 
 class Plugin(Filter):
