@@ -66,8 +66,8 @@ class Plugin(Filter):
     note = ['all', 'auto_msk', 'auto_snap', 'preview']
     para = {'sigma':2, 'low':10, 'high':20}
     view = [(float, (0,10), 1,  'sigma', 'sigma', 'pix'),
-            ('slide',(0,255), 'low_threshold', 'low',''),
-            ('slide',(0,255), 'high_threshold', 'high','')]
+            ('slide',(0,255), 0, 'low_threshold', 'low'),
+            ('slide',(0,255), 0, 'high_threshold', 'high')]
 
     def run(self, ips, snap, img, para = None):
     	l = int(para['sigma']*2.5)*2+1
