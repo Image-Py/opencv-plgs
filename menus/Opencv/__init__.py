@@ -1,1 +1,1 @@
-catlog = ['Threshold', 'Filters', 'Segmentation', '-', 'Demo']
+catlog = ['Video IO', '-', 'Threshold', 'Filters', 'Segmentation', '-', 'Demo']
