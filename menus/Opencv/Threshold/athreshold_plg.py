@@ -7,11 +7,11 @@ class Plugin(Filter):
     title = 'Adaptive Threshold'
     note = ['8-bit', 'auto_msk', 'auto_snap', 'preview']
     para = {'max':255, 'med':'mean', 'size':9, 'offset':2, 'inv':False}
-    view = [(int, (0, 255), 0, 'maxvalue', 'max', ''),
-            (list, ['mean', 'gauss'], str, 'method', 'med', ''),
-            (int, (3, 31), 0, 'blocksize', 'size', 'pix'),
-            (int, (0, 50), 0, 'offset', 'offset', ''),
-            (bool, 'binary invert', 'inv')]
+    view = [(int, 'max', (0, 255), 0, 'maxvalue', ''),
+            (list, 'med', ['mean', 'gauss'], str, 'method', ''),
+            (int, 'size', (3, 31), 0, 'blocksize', 'pix'),
+            (int, 'offset', (0, 50), 0, 'offset', ''),
+            (bool , 'inv', 'binary invert')]
     
     #process
     def run(self, ips, snap, img, para = None):
