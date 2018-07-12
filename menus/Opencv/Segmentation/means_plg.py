@@ -5,7 +5,7 @@ import cv2
 class K_mean(Filter):
 	"""FillHoles: derived from imagepy.core.engine.Filter """
 	title = 'K-Mean'
-	note = ['rgb', 'not_channel','auto_msk', 'auto_snap','preview']
+	note = ['rgb','2float', 'not_channel','auto_msk', 'auto_snap','preview']
 	para = {'nclusters':8,'criteria':cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,'max_iter':300,'epsilon':1.0,'flags':cv2.KMEANS_RANDOM_CENTERS}
 	view = [(int, 'nclusters', (0,99999), 0,  'nclusters', ''),
 	(int, 'max_iter', (0,99999), 0,  'max_iter', ''),
@@ -15,7 +15,7 @@ class K_mean(Filter):
 	def run(self, ips, snap, img, para = None):
 		Z = snap.reshape((-1,3))
 		# convert to np.float32
-		Z = np.float32(Z)
+		# Z = np.float32(Z)
 		# define criteria, number of clusters(K) and apply kmeans()
 		criteria = (para['criteria'], para['max_iter'], para['epsilon'])
 		K = para['nclusters']
