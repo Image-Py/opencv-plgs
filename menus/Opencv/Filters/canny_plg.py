@@ -6,9 +6,9 @@ class Plugin(Filter):
     title = 'Canny'
     note = ['all', 'auto_msk', 'auto_snap', 'preview']
     para = {'sigma':2, 'low':10, 'high':20}
-    view = [(float, (0,10), 1,  'sigma', 'sigma', 'pix'),
-            ('slide',(0,255), 0, 'low_threshold', 'low'),
-            ('slide',(0,255), 0, 'high_threshold', 'high')]
+    view = [(float, 'sigma', (0,10), 1,  'sigma', 'pix'),
+            ('slide', 'low', (0,255), 0, 'low_threshold'),
+            ('slide', 'high', (0,255), 0, 'high_threshold')]
 
     def run(self, ips, snap, img, para = None):
         l = int(para['sigma']*2.5)*2+1
