@@ -1,5 +1,18 @@
-opencv-plgs   
-======================
+# opencv-plgs  
+
+**Path:** https://github.com/Image-Py/opencv-plgs
+
+**Version:** 0.1
+
+**Author:** YXDragon
+
+**Email:** yxdragon@imagepy.org
+
+**Keyword:** opencv
+
+**Description:** OpenCV plugin set for ImagePy
+
+you must fill the information upon, and you can not remove or insert line, you can write free below.
 
 
 **Introduction:**opencv need not much introductions, It is a famous computer vision library. ImagePy is a interactive image processing framework which can wrap any numpy based library esaily. And supporting multi-channels, imagestack, lookuptable, roi, macros recorder...It is a Plugin system(just like ImageJ but more convenient). This project is a wrapper of opencv for ImagePy plugins!
