@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 import cv2
-from imagepy.core.engine import Filter
+from sciapp.action import Filter
 
 class Plugin(Filter):
     title = 'Laplacian'
