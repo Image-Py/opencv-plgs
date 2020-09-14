@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from imagepy import IPy
+
 import numpy as np, cv2
-from imagepy.core.engine import Filter
+from sciapp.action import Filter
         
 class Plugin(Filter):
     title = 'Adaptive Threshold'
@@ -17,4 +17,4 @@ class Plugin(Filter):
     def run(self, ips, snap, img, para = None):
         med = cv2.ADAPTIVE_THRESH_MEAN_C if para['med']=='mean' else cv2.ADAPTIVE_THRESH_GAUSSIAN_C
         mtype = cv2.THRESH_BINARY_INV if para['inv'] else cv2.THRESH_BINARY
-        cv2.adaptiveThreshold(snap, para['max'], med, para['inv'], para['size'], para['offset'], dst=img)
+        cv2.adaptiveThreshold(snap, para['max'], med, mtype, para['size'], para['offset'], dst=img)
