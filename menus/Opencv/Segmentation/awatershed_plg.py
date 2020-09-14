@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*
-from imagepy.core.engine import Filter
+from sciapp.action import Filter
 import numpy as np, cv2
+from sciapp.object import image
 
 class Plugin(Filter):
-	title = 'Active Watershed'
-	note = ['rgb', 'not_slice', 'auto_snap']
-	
-	def run(self, ips, snap, img, para = None):
-		a, msk = cv2.connectedComponents(ips.get_msk().astype(np.uint8))
-		msk = cv2.watershed(img, msk)==-1
-		img //= 2
-		img[msk] = 255
+    title = 'Active Watershed'
+    note = ['rgb', 'req_roi', 'not_slice', 'auto_snap']
+
+    def run(self, ips, snap, img, para=None):
+        a, msk = cv2.connectedComponents(ips.mask('in').astype(np.uint8))
+        msk = cv2.watershed(ips.img, msk) == -1
+        ips.img //= 2
+        ips.img[msk] = 255
