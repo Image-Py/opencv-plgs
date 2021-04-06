@@ -1,57 +1,50 @@
-from imagepy.core.util import fileio
-from imagepy.core.engine import Free, Simple
-from imagepy import IPy
-from scipy.misc import imread, imsave
-from imagepy.core.manager import ReaderManager, WriterManager
+from sciapp.action import dataio
+from sciapp.action import Free, Simple
+from imageio import imread, imsave
 import cv2, wx, os
 import numpy as np
 
-class Writer(Simple):
+class Writer(dataio.ImageWriter):
 	title = 'Video Writer'
+	filt = ['WMV', 'AVI', 'MOV']
 	note = ['rgb', '8-bit']
-	para = {'path':'','fps':24, 'down':1}
+	para = {'path':'','fps':10, 'down':1, 'fmt':'DIVX'}
 	#para = {'path':'./','name':'','format':'png'}
 
 	view = [(int, 'fps', (1,120), 0, 'frame', '/s'),
-			(int, 'down', (1,10), 0, 'down sample', '')]
+			(int, 'down', (1,10), 0, 'down sample', ''),
+			(list, 'fmt', ['DIVX','MJPG','XVID','X264'], str, 'compress', 'fmt')]
 
 	def show(self):
-		self.para['name'] = self.ips.title
-		rst = IPy.get_para('Save Video', self.view, self.para)
-		if rst!=wx.ID_OK:return rst
-		return IPy.getpath('Save Video', '%s files (*.%s)|*.%s'%('WMV','wmv','wmv'), 'save', self.para)
+		if not dataio.ImageWriter.show(self): return
+		return Simple.show(self)
 
 	#process
 	def run(self, ips, imgs, para = None):
-		path = para['path']+'/'+para['name']
 		shp = imgs[0][::para['down'], ::para['down']].shape[:2]
-		print(para['path'], cv2.VideoWriter_fourcc(*'MJPG'), para['fps'], shp[::-1])
-		writer = cv2.VideoWriter(para['path'], cv2.VideoWriter_fourcc(*'MJPG'), para['fps'], shp[::-1])
+		fmt =  cv2.VideoWriter_fourcc(*para['fmt'])
+		writer = cv2.VideoWriter(para['path'], fmt, para['fps'], shp[::-1])
 		for i in range(len(imgs)):
 			self.progress(i, len(imgs))
-			buf = ips.lookup(imgs[i][::para['down'], ::para['down']])
-			writer.write(buf[:,:,::-1])
+			writer.write(imgs[i] if ips.channels==1 else imgs[i][:,:,::-1])
 		writer.release()
 
-class Reader(Free):
+class Reader(dataio.Reader):
 	title = 'Video Reader'
-	para = {'path':'', 'start':0, 'end':0, 'gray':False, 'title':'sequence'}
+	tag = 'img'
+	filt = ['WMV', 'AVI', 'MOV']
+	para = {'path':'', 'start':0, 'end':-1, 'step':1}
 
 	def show(self):
-		filt = '|'.join(['%s files (*.%s)|*.%s'%(i.upper(),i,i) for i in (
-			'wmv', 'avi', 'mov')])
-		rst = IPy.getpath('Import Video', filt, 'open', self.para)
-		if rst!=wx.ID_OK:return rst
-
+		if not dataio.Reader.show(self): return
 		videoCapture = cv2.VideoCapture(self.para['path'])
 		nfs = int(videoCapture.get(cv2.CAP_PROP_FRAME_COUNT))
 		videoCapture.release()
 		self.para['end'] = nfs-1
-		self.view = [(str, 'title','Title',''), 
-					 (int, 'start', (0, nfs-1), 0, 'Start',  '0~{}'.format(nfs)),
-					 (int, 'end', (0, nfs-1), 0, 'End',  '0~{}'.format(nfs)),
-					 (bool, 'gray', 'convert to gray')]
-		return IPy.get_para('Import sequence', self.view, self.para)
+		self.view = [(int, 'start', (0, nfs-1), 0, 'start',  '0~{}'.format(nfs)),
+					 (int, 'end', (0, nfs-1), 0, 'end',  '0~{}'.format(nfs)),
+					 (int, 'step', (0, 100), 0, 'step',  '0~100')]
+		return Free.show(self)
 
 	#process
 	def run(self, para = None):
@@ -59,15 +52,13 @@ class Reader(Free):
 		fn, fe = os.path.splitext(fn)
 		imgs = []
 		videoCapture = cv2.VideoCapture(self.para['path'])
+		fms = range(para['start'], para['end'], para['step'])
 		videoCapture.set(cv2.CAP_PROP_POS_FRAMES, para['start'])
-		for i in range(para['end']-para['start']):
-			img = videoCapture.read()[1][:,:,::-1]
-			if para['gray']:img = img[:,:,0].copy()
-			imgs.append(img)
+		for i in fms:
+			if para['step']!=1: videoCapture.set(cv2.CAP_PROP_POS_FRAMES, i)
+			imgs.append(videoCapture.read()[1][:,:,::-1])
 			self.progress(i, para['end']-para['start'])
 		videoCapture.release()
-		IPy.show_img(imgs, para['title'])
-
-		print(fn, fe)
+		self.app.show_img(imgs, fn)
 
 plgs = [Reader, Writer]
